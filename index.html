@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Notepads</title>
+    <style>
+        /* Background with a business theme */
+        body {
+            font-family: Arial, sans-serif;
+            background: url('bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+            color: white;
+        }
+
+        h1 {
+            margin-top: 50px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Button styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 250px;
+            height: 60px;
+            margin: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        /* Button hover effect */
+        .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 5px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Cheque Notepad button */
+        .cheque-btn {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+        }
+
+        /* Loan Notepad button */
+        .loan-btn {
+            background: linear-gradient(135deg, #28a745, #1d7c35);
+        }
+
+        /* Icon styles */
+        .btn img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+    </style>
+
+    <script>
+        function openChequeNotepad() {
+            let width = 500, height = 800;
+            window.open("c.html", "ChequeNotepad", `width=${width}, height=${height}`);
+        }
+
+        function openLoanNotepad() {
+            let width = 500, height = 800;
+            window.open("l.html", "LoanNotepad", `width=${width}, height=${height}`);
+        }
+    </script>
+</head>
+<body>
+
+    <h1>Business Notepads</h1>
+
+    <!-- Buttons with icons -->
+    <button class="btn cheque-btn" onclick="openChequeNotepad()">
+        <img src="c.png" alt="Cheque Icon"> Cheque Notepad
+    </button>
+
+    <button class="btn loan-btn" onclick="openLoanNotepad()">
+        
+        
+  
+        
+        <img src="l.png" alt="Loan Icon"> Loan Notepad
+    </button>
+
+    <mar>
+    
+  <center>
+    <footer style=" animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        footer { margin-top: 20px; font-weight: bold; }">
+        <p>©️ 2025 AMI. All Rights Reserved.</p>
+        <p>Deployed by AMI</p>
+    </footer></center>
+<mar/> 
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    
+    
+    
+</body>
+</html>
