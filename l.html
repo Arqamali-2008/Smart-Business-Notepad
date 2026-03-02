@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Notepad - AMI</title>
+    <style>
+        * { font-family: Arial, sans-serif; box-sizing: border-box; }
+        body { background: #f4f4f4; padding: 20px; text-align: center; }
+        h2 { color: #333; animation: fadeIn 1s ease-in-out; }
+        .container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        input, button { padding: 10px; margin: 5px; border: 1px solid #ccc; border-radius: 5px; width: 100%; }
+        button { background: #28a745; color: white; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #218838; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
+        th, td { border: 1px solid #ddd; padding: 5px; text-align: center; }
+        th { background: #007bff; color: white; }
+        .delete-btn { background: red; cursor: pointer; color: white; padding: 5px; border: none; }
+        .fadeIn { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        footer { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>Loan Notepad - AMI</h2>
+    <div class="container">
+        <input type="text" id="loanNo" placeholder="Loan No">
+        <input type="date" id="loanDate">
+        <input type="text" id="borrowerName" placeholder="Borrower's Name">
+        <input type="text" id="lenderName" placeholder="Lender's Name">
+        <input type="number" id="loanAmount" placeholder="Loan Amount">
+        <input type="text" id="loanDesc" placeholder="Description">
+        <button onclick="addLoan()">Add Loan</button>
+    </div>
+
+    <h3>Filter History</h3>
+    <div class="container">
+        <input type="date" id="filterDay" onchange="filterHistory()">
+        <input type="month" id="filterMonth" onchange="filterHistory()">
+        <input type="number" id="filterYear" placeholder="Enter Year" oninput="filterHistory()">
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Date</th>
+                <th>Borrower</th>
+                <th>Lender</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody id="loanHistory"></tbody>
+    </table>
+
+    <h3>Print Summary</h3>
+    <div class="container">
+        <input type="date" id="printDay">
+        <button onclick="printSummary('day')">Print Day Summary</button>
+        
+        <input type="week" id="printWeek">
+        <button onclick="printSummary('week')">Print Week Summary</button>
+        
+        <input type="month" id="printMonth">
+        <button onclick="printSummary('month')">Print Month Summary</button>
+        
+        <button onclick="printSummary('all')">Print All Summary</button>
+    </div>
+
+    <footer>
+        <p>©️ 2025 AMI. All Rights Reserved.</p>
+        <p>Deployed by AMI</p>
+    </footer>
+
+    <script>
+        let loans = JSON.parse(localStorage.getItem("loans")) || [];
+
+        function addLoan() {
+            let loan = {
+                loanNo: document.getElementById("loanNo").value,
+                loanDate: document.getElementById("loanDate").value,
+                borrowerName: document.getElementById("borrowerName").value,
+                lenderName: document.getElementById("lenderName").value,
+                loanAmount: document.getElementById("loanAmount").value,
+                loanDesc: document.getElementById("loanDesc").value
+            };
+
+            loans.push(loan);
+            localStorage.setItem("loans", JSON.stringify(loans));
+            renderHistory();
+            document.querySelectorAll("input").forEach(input => input.value = "");
+        }
+
+        function renderHistory(filteredLoans = loans) {
+            let historyTable = document.getElementById("loanHistory");
+            historyTable.innerHTML = "";
+
+            filteredLoans.forEach((loan, index) => {
+                historyTable.innerHTML += `
+                    <tr class="fadeIn">
+                        <td>${loan.loanNo}</td>
+                        <td>${loan.loanDate}</td>
+                        <td>${loan.borrowerName}</td>
+                        <td>${loan.lenderName}</td>
+                        <td>${loan.loanAmount}</td>
+                        <td>${loan.loanDesc}</td>
+                        <td><button class="delete-btn" onclick="deleteLoan(${index})">X</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function deleteLoan(index) {
+            loans.splice(index, 1);
+            localStorage.setItem("loans", JSON.stringify(loans));
+            renderHistory();
+        }
+
+        function filterHistory() {
+            let dayFilter = document.getElementById("filterDay").value;
+            let monthFilter = document.getElementById("filterMonth").value;
+            let yearFilter = document.getElementById("filterYear").value;
+
+            let filtered = loans.filter(l => {
+                if (dayFilter && l.loanDate !== dayFilter) return false;
+                if (monthFilter && !l.loanDate.startsWith(monthFilter)) return false;
+                if (yearFilter && !l.loanDate.startsWith(yearFilter)) return false;
+                return true;
+            });
+
+            renderHistory(filtered);
+        }
+
+        function printSummary(type) {
+            let filterDate = document.getElementById(`print${type.charAt(0).toUpperCase() + type.slice(1)}`).value;
+            let filteredLoans = loans;
+
+            if (type !== 'all' && filterDate) {
+                filteredLoans = loans.filter(l => l.loanDate.startsWith(filterDate));
+            }
+
+            let printWindow = window.open('', '', 'width=300,height=600');
+            printWindow.document.write(`
+                <html>
+                <head><title>Print Summary</title></head>
+                <body>
+                    <h3>Loan Summary (${type.toUpperCase()})</h3>
+                    <table border="1">
+                        <tr><th>No</th><th>Date</th><th>Borrower</th><th>Lender</th><th>Amount</th><th>Description</th></tr>
+                        ${filteredLoans.map(l => `
+                            <tr>
+                                <td>${l.loanNo}</td>
+                                <td>${l.loanDate}</td>
+                                <td>${l.borrowerName}</td>
+                                <td>${l.lenderName}</td>
+                                <td>${l.loanAmount}</td>
+                                <td>${l.loanDesc}</td>
+                            </tr>
+                        `).join("")}
+                    </table>
+                    <p>©️ 2025 AMI. All Rights Reserved.</p>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        renderHistory();
+    </script>
+
+</body>
+</html>
